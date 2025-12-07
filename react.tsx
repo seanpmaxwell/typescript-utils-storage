@@ -42,12 +42,14 @@ export function useSetState<T extends object>(
 export function useOnChange<T = void>(
   cb: (prevVal?: T, newVal?: T) => void, dep: T,
 ): void {
-  const prevVal = usePrevious(dep);
+  const ref = useRef<T>(undefined);
   useEffect(() => {
-    if (prevVal !== dep) {
+    if (ref.current !== dep) {
+      const prevVal = ref.current;
+      ref.current = dep;
       cb(prevVal, dep);
     }
-  }, [cb, dep, prevVal]);
+  }, [cb, dep]);
 }
 
 /**
